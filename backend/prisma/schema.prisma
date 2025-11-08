@@ -34,7 +34,9 @@ model Worker{
   userId      String   @unique
   user        User     @relation(fields: [userId], references: [id])
   form        Form?
-  // conversations Conversation[] 
+  latitude      Float?
+  longitude     Float?
+  conversations Conversation[] 
   appliedPosts AppliedWorker[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -46,8 +48,10 @@ model Client{
   avatar      String?
   userId      String   @unique
   user        User     @relation(fields: [userId], references: [id])
-  // conversations Conversation[] 
+  conversations Conversation[] 
   contact     String?
+  latitude      Float?
+  longitude     Float?
   location    String?
   address     String?
   posts       Post[]
@@ -126,4 +130,24 @@ model AppliedWorker {
   post      Post     @relation("AppliedWorkers",fields: [postId], references: [id])
   worker    Worker   @relation(fields: [workerId], references: [id])
   createdAt DateTime @default(now())
+}
+
+/////////////////////////////models for chatting 
+model Conversation {
+  id        String  @id @default(cuid())
+  workerId  String
+  clientId  String
+  worker    Worker  @relation(fields: [workerId], references: [id])
+  client    Client  @relation(fields: [clientId], references: [id])
+  messages  Message[] 
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id              String        @id @default(cuid())
+  conversationId  String
+  senderId        String
+  text            String
+  createdAt       DateTime      @default(now())
+  conversation    Conversation  @relation(fields: [conversationId], references: [id])
 }
