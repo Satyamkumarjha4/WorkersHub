@@ -1,0 +1,81 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  role      Role
+  client    Client?
+  worker    Worker?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  Worker
+  Client
+}
+
+model Worker{
+  id          String   @id @default(cuid())
+  name        String?
+  avatar      String?
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  form        Form?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Client{
+  id          String   @id @default(cuid())
+  name        String?
+  avatar      String?
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  contact     String?
+  location    String?
+  address     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Form{
+  id          String   @id @default(cuid())
+  workerId    String   @unique
+  worker      Worker   @relation(fields: [workerId], references: [id])
+  name        String?
+  age         Int?
+  workingAddress String?
+  category    Category?
+  contact     String?
+  aadhaarNumber String?
+  panNumber   String?
+  description String?
+  gender      String?
+  upi         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Category{
+  Plumber
+  Electrician
+  Carpenter
+  Painter
+  Cleaner
+  Mechanic
+  Gardener
+  Other
+}

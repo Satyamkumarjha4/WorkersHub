@@ -5,10 +5,7 @@ import cors from "cors";
 import userRoutes from "./src/routes/userRoutes.js";
 import loginRoutes from "./src/routes/loginRoutes.js";
 import registerRoutes from "./src/routes/registerRoutes.js";
-import chatRouter from "./src/routes/chatRoutes.js";
-import formRoutes from "./src/routes/formRoutes.js";
 import postRoutes from "./src/routes/postRoutes.js";
-import workerRouter from "./src/routes/workerRoute.js";
 
 dotenv.config();
 
@@ -18,10 +15,7 @@ app.use(express.json());
 app.use("/api/user", userRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/register", registerRoutes);
-app.use("/api/conversation", chatRouter);
-app.use("/api/provider/form", formRoutes);
 app.use("/api/post", postRoutes);
-app.use('/api/worker',workerRouter)
 
 const PORT = process.env.PORT || 5000;
 
