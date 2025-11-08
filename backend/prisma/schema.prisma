@@ -34,6 +34,8 @@ model Worker{
   userId      String   @unique
   user        User     @relation(fields: [userId], references: [id])
   form        Form?
+  // conversations Conversation[] 
+  appliedPosts AppliedWorker[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -44,9 +46,11 @@ model Client{
   avatar      String?
   userId      String   @unique
   user        User     @relation(fields: [userId], references: [id])
+  // conversations Conversation[] 
   contact     String?
   location    String?
   address     String?
+  posts       Post[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -78,4 +82,48 @@ enum Category{
   Mechanic
   Gardener
   Other
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  budget      Float?
+  category    Category?
+  media       Media[]
+  deadline    DateTime?
+  appliedWorkers AppliedWorker[] @relation("AppliedWorkers")
+  acceptedStatus PostStatus?
+  selectedWorkerId String?
+  authorId    String
+  author      Client   @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum PostStatus {
+  Open
+  InProgress
+  Completed
+  Cancelled
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model AppliedWorker {
+  id        String   @id @default(cuid())
+  postId    String
+  workerId  String
+  selected  Boolean  @default(false)
+  description String?
+  budget    Float?
+  post      Post     @relation("AppliedWorkers",fields: [postId], references: [id])
+  worker    Worker   @relation(fields: [workerId], references: [id])
+  createdAt DateTime @default(now())
 }
