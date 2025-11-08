@@ -30,4 +30,3 @@ export const getWorkerList = async (req, res) => {
     })
   }
 }
-
