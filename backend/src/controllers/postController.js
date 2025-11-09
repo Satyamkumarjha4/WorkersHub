@@ -95,7 +95,7 @@ export const getAllPost = async (req, res) => {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
@@ -105,17 +105,50 @@ export const getAllPost = async (req, res) => {
       posts,
     });
   } catch (error) {
-    console.log('Error in getAllPost:', error);
+    console.log("Error in getAllPost:", error);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch posts',
+      message: "Failed to fetch posts",
       error: error.message,
     });
   }
 };
-   export const applyToPostHandler = async (req, res) => {
+
+export const getPostById = async (req, res) => {
   try {
-    const { workerId, description, budget,postId  } = req.body;
+    const { postId } = req.query;
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      include: { media: true, author: true, appliedWorkers: true },
+    });
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+export const getAllPostsOfClient = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const posts = await prisma.post.findMany({
+      where: id ? { authorId: id } : {},
+      include: { media: true, author: true, appliedWorkers: true },
+    });
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const applyToPostHandler = async (req, res) => {
+  try {
+    const { workerId, description, budget, postId } = req.body;
 
     if (!postId || !workerId) {
       return res.status(400).json({
@@ -132,7 +165,9 @@ export const getAllPost = async (req, res) => {
       });
     }
 
-    const alreadyApplied = await prisma.appliedWorker.findFirst({ where: { postId, workerId } });
+    const alreadyApplied = await prisma.appliedWorker.findFirst({
+      where: { postId, workerId },
+    });
     if (alreadyApplied) {
       return res.status(400).json({
         success: false,
@@ -155,6 +190,12 @@ export const getAllPost = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in applyToPost:", error);
-    res.status(500).json({ success: false, message: "Failed to apply to post", error: error.message });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Failed to apply to post",
+        error: error.message,
+      });
   }
 };
