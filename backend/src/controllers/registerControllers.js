@@ -50,3 +50,55 @@ export const registerUser = async (req, res) => {
     return res.status(500).json({ message: "Something went wrong", error });
   }
 };
+
+export const registerUserWithGoogle = async (req, res) => {
+  try {
+    const { role } = req.query;
+    const { name, email, avatar } = req.body;
+    console.log(
+      "Registering user with Google data:",
+      req.body,
+      "and role:",
+      role
+    );
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const user = await prisma.user.create({
+      data: {
+        role: role === "client" ? "Client" : "Worker",
+        email,
+      },
+    });
+
+    let profile;
+
+    if (role === "worker") {
+      profile = await prisma.worker.create({
+        data: {
+          name,
+          avatar,
+          userId: user.id,
+        },
+      });
+    } else if (role === "client") {
+      profile = await prisma.client.create({
+        data: {
+          name,
+          avatar,
+          userId: user.id,
+        },
+      });
+    }
+    return res.status(201).json({
+      message: `${role} registered successfully`,
+      user: { ...user, profile },
+    });
+  } catch (error) {
+    console.error("Error registering user with Google:", error);
+    return res.status(500).json({ message: "Something went wrong", error });
+  }
+};

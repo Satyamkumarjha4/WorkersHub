@@ -36,6 +36,7 @@ export const sendMessage = async (req, res) => {
     if (containsNumber(message) || containsURL(message)) {
       return res.status(400).json({
         success: false,
+        
         message: "Messages cannot contain phone numbers or links.",
       });
     }
@@ -49,7 +50,8 @@ export const sendMessage = async (req, res) => {
       clientId = sender.client?.id;
       workerId = receiver.worker?.id;
     }
-
+    console.log("workerId", workerId);
+    // conso
     if (!workerId || !clientId) {
       return res.status(400).json({
         success: false,
