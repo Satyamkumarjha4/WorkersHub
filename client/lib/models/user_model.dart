@@ -7,8 +7,16 @@ class UserModel {
   final String? email;
   final String? avatar;
   final Role? role;
+  final List<dynamic>? messages;
 
-  const UserModel({this.name, this.email, this.avatar, this.role, this.id});
+  const UserModel({
+    this.name,
+    this.email,
+    this.avatar,
+    this.role,
+    this.id,
+    this.messages,
+  });
 
   factory UserModel.fromJSON(AuthResponse response) {
     print("response in user model is ${response.data}");
@@ -25,6 +33,7 @@ class UserModel {
       email: response.data?["email"],
       avatar: response.data?["avatar"],
       role: role,
+      messages: [],
     );
   }
 }

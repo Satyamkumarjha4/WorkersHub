@@ -1,15 +1,14 @@
+import 'package:client/features/auth/data/models/google_auth_model.dart';
 import 'package:client/models/user_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
-class UserNotifier extends Notifier<UserModel> {
-  @override
-  UserModel build() => UserModel();
-
-  void updateUser(UserModel data) {
-    state = data;
-  }
-}
-
-final userNotifierProvider = NotifierProvider<UserNotifier, UserModel>(
-  UserNotifier.new,
-);
+final userNotifierProvider = StateProvider<UserModel>((ref) {
+  final UserModel user = UserModel(
+    id: "",
+    name: "",
+    avatar: "",
+    email: "",
+    role: Role.client,
+  );
+  return user;
+});

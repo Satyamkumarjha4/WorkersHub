@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ListOfWorkers extends ConsumerWidget {
-  final List<WorkerModel> workers;
+  final List<dynamic> workers;
   const ListOfWorkers({super.key, required this.workers});
 
   @override

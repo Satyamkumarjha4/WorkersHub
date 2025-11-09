@@ -21,7 +21,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final supabaseClient = ref.read(supabaseClientProvider);
       print(supabaseClient.auth.currentSession);
-      if (supabaseClient.auth.currentSession != null) {
+      if (supabaseClient.auth.currentSession == null) {
         // ✅ Navigate immediately if user already logged in
         Navigator.pushReplacement(
           context,

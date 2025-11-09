@@ -81,7 +81,9 @@ class AuthProvider extends StateNotifier<AppAuthState> {
         print("from server: ${response.data}");
 
         state = AppAuthState.authenticated(authState.session!);
-
+        _ref
+            .read(userNotifierProvider.notifier)
+            .update((_) => UserModel.fromJSON(response));
         navigatorKey.currentState?.pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (_) => CallbackScreen(user: UserModel.fromJSON(response)),
